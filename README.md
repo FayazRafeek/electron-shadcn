@@ -13,6 +13,7 @@ To develop a Electron app, you probably will need some UI, test, formatter, styl
 - [Electron 35](https://www.electronjs.org)
 - [Vite 6](https://vitejs.dev)
 - [SWC](https://swc.rs)
+- [vite-plugin-compression](https://www.npmjs.com/package/vite-plugin-compression)
 
 ### DX 🛠️
 
@@ -152,3 +153,63 @@ npm run start
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](https://github.com/LuanRoger/electron-shadcn/blob/main/LICENSE) file for details.
+
+## Asset Compression
+
+To improve the performance of our Electron-based project, we use the [`vite-plugin-compression`](https://www.npmjs.com/package/vite-plugin-compression) plugin to compress static assets (JavaScript, CSS, etc.) during production builds.
+
+### Installation
+
+Install `vite-plugin-compression` as a dev dependency:
+
+```bash
+npm install vite-plugin-compression --save-dev
+```
+
+### Configuration
+
+Configure the plugin in `vite.main.config.ts` and `vite.renderer.config.mts`:
+
+#### `vite.main.config.ts`
+
+```ts
+import viteCompression from 'vite-plugin-compression';
+
+export default defineConfig({
+  plugins: [
+    viteCompression({
+      algorithm: 'brotliCompress',  // You can choose 'gzip' as well
+      ext: '.br',                   // or '.gz' for gzip
+      threshold: 10240,             // Compress files larger than 10kb
+      deleteOriginFile: false       // Keep original uncompressed files
+    })
+  ]
+});
+```
+
+#### `vite.renderer.config.mts`
+
+```ts
+import viteCompression from 'vite-plugin-compression';
+
+export default defineConfig({
+  plugins: [
+    viteCompression({
+      algorithm: 'brotliCompress',  // You can choose 'gzip' as well
+      ext: '.br',                   // or '.gz' for gzip
+      threshold: 10240,             // Compress files larger than 10kb
+      deleteOriginFile: false       // Keep original uncompressed files
+    })
+  ]
+});
+```
+
+### Testing
+
+Test the build process by running:
+
+```bash
+npm run build
+```
+
+Ensure that compressed files (`.br` or `.gz`) are created in the `dist` folder.
